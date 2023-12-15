@@ -17,34 +17,38 @@ def proper_format(file_path):
     return df
 
 
-def mean_ground_correction(data):
+def mean_ground_correction(data, plot=True):
     channels = ['PFC', 'hippocampus1', 'hippocampus2', 'striatum1', 'striatum2', 'striatum3', 'ground1', 'ground2', 'ground3']
     mean_ground = ((data['ground1'] + data['ground2'] + data['ground3'])/3)
     time_vector = np.arange(start=0, stop= (len(data)))
     for chan in channels:
         data[chan] = data[chan] - mean_ground
-    fig, ax = plt.subplots(nrows=len(channels), ncols=1, figsize=(24,24), sharex=True)
-    for chan in channels:
-        i = channels.index(chan)
-        ax[i].plot(time_vector, data[chan])
-        ax[i].set_title(chan)
-    plt.suptitle('Ground Corrected Data', fontsize=48,y=0.93)
-    plt.show()
+    if plot == True:
+        fig, ax = plt.subplots(nrows=len(channels), ncols=1, figsize=(24,24), sharex=True)
+        for chan in channels:
+            i = channels.index(chan)
+            ax[i].plot(time_vector, data[chan])
+            ax[i].set_title(chan)
+        plt.suptitle('Ground Corrected Data', fontsize=48,y=0.93)
+        plt.show()
 
 
-def bandpass_of_interest(data, hi, lo, fs=1024):
+def bandpass_of_interest(data, hi, lo, fs=1024, plot=True):
     recording_channels = ['PFC', 'hippocampus1', 'hippocampus2', 'striatum1', 'striatum2', 'striatum3']
     sos = signal.butter(lo,hi,'lp', fs, output = 'sos')
     time_vector = np.arange(start=0, stop= (len(data)))
     for chan in channels:
         data[chan] = signal.sosfiltfilt(sos, data[chan])
-    fig, ax = plt.subplots(nrows=len(recording_channels), ncols=1, figsize=(24,24), sharex=True)
-    for chan in recording_channels:
-        i = channels.index(chan)
-        ax[i].plot(time_vector, data[chan])
-        ax[i].set_title(chan, fontsize=24)
-    plt.suptitle('Bandpassed Data', fontsize=48,y=0.93)
-    plt.show()
+    if plot == True:
+        fig, ax = plt.subplots(nrows=len(recording_channels), ncols=1, figsize=(24,24), sharex=True)
+        for chan in recording_channels:
+            i = channels.index(chan)
+            ax[i].plot(time_vector, data[chan])
+            ax[i].set_title(chan, fontsize=24)
+        plt.suptitle('Bandpassed Data', fontsize=48,y=0.93)
+        plt.show()
+    else:
+        return
 
 
 
