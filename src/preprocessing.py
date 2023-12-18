@@ -33,7 +33,7 @@ def mean_ground_correction(data, plot=True):
         plt.show()
 
 
-def bandpass_of_interest(data, hi, lo, fs=1024, plot=True):
+def bandpass_of_interest(data, lo, hi, fs=1024, plot=True):
     recording_channels = ['PFC', 'hippocampus1', 'hippocampus2', 'striatum1', 'striatum2', 'striatum3']
     sos = signal.butter(lo,hi,'lp', fs, output = 'sos')
     time_vector = np.arange(start=0, stop= (len(data)))

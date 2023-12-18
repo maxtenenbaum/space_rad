@@ -1,0 +1,19 @@
+Hypercapnia Pipeline
+
+Goals: Analyze spectral power across time and sessions
+
+Pipeline:
+
+Preprocess
+1. Load and format data
+2. Bandpass and isolate frequencies
+3. Notch out line noise
+4. Correct to ground
+
+Visualize
+1. Plot processed data
+2. Plot LFP power (dB) for different frequency bands as a function of time (s) for all channels
+
+Analyze
+1. Run ANOVA to determine significant in difference between sessions
+
