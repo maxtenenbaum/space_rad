@@ -39,7 +39,7 @@ def power_spectral_density(data, fs=1024, title='Data'):
     plt.xlim(2, 50)
     plt.tick_params(axis='x', labelsize=24)
     plt.tick_params(axis='y', labelsize=24)
-    plt.ylim(0.0001,1000)
+    plt.ylim(0.0001,None)
     plt.grid(visible=True, which='major')
     plt.title(title, fontsize=48)
     plt.legend()  # Add a legend to distinguish channels
