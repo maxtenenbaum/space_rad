@@ -35,7 +35,7 @@ def mean_ground_correction(data, plot=True):
 
 
 def bandpass_of_interest(data, lo, hi, fs=1024, plot=False):
-    N = 4  # Example order, adjust based on your needs
+    N = 8  # Example order, adjust based on your needs
     channels = ['PFC', 'hippocampus1', 'hippocampus2', 'striatum1', 'striatum2', 'striatum3', 'ground1', 'ground2', 'ground3']
     sos = signal.butter(N, (lo, hi), 'bp', fs=fs, output='sos')
     time_vector = np.arange(start=0, stop=(len(data)))
