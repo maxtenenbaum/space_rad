@@ -33,23 +33,6 @@ def mean_ground_correction(data, plot=True):
         plt.show()
     return data
 
-"""
-def bandpass_of_interest(data, lo, hi, fs=1024, plot=False):
-    channels = ['PFC', 'hippocampus1', 'hippocampus2', 'striatum1', 'striatum2', 'striatum3']
-    sos = signal.butter(lo,hi,'lp', fs, output = 'sos')
-    time_vector = np.arange(start=0, stop= (len(data)))
-    for chan in channels:
-        data[chan] = signal.sosfiltfilt(sos, data[chan])
-    if plot == True:
-        fig, ax = plt.subplots(nrows=len(channels), ncols=1, figsize=(24,24), sharex=True)
-        for chan in channels:
-            i = channels.index(chan)
-            ax[i].plot(time_vector, data[chan])
-            ax[i].set_title(chan, fontsize=24)
-        plt.suptitle('Bandpassed Data', fontsize=48,y=0.93)
-        plt.show()
-    else:
-        return"""
 
 def bandpass_of_interest(data, lo, hi, fs=1024, plot=False):
     N = 4  # Example order, adjust based on your needs
