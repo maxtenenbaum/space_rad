@@ -17,3 +17,24 @@ Visualize
 Analyze
 1. Run ANOVA to determine significant in difference between sessions
 
+
+///
+
+DMN data
+
+Goal: Find transient drop in DMN activity and subsequent increase in some region
+
+Analyze 2 minute windows:
+T+3-5 minutes
+T+10-12 minutes
+
+Preprocess
+1. Load and format data
+2. Bandpass and isolate frequencies
+3. Notch out line noise
+4. Correct to ground
+
+Analyze
+1. Plot power spectrum for each channel for the two windows
+2. Highlight significant differences
+3. Run ANOVA to determine significance
