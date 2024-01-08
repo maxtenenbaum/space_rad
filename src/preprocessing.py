@@ -50,6 +50,12 @@ def bandpass_of_interest(data, lo, hi, fs=1024, plot=False):
         plt.show()
     else:
         return data  # Returning data might be more useful than just 'return'
+    
+def combine_channels(data):
+    hippocampus = (data['hippocampus1'] + data['hippocampus2']) / 2
+    striatum = (data['striatum1'] + data['striatum2'] + data['striatum3']) / 3
+
+
 
 
 
