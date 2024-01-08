@@ -24,5 +24,8 @@ rat84_corrected = preprocessing.mean_ground_correction(rat84_dmn_bandpassed)
 
 # Combine like channels 
 """
-Due to electrode setup, channels are averaged with eachother in order to reduce variance
+Due to electrode setup, channels are averaged with each other in order to reduce variance
 """
+rat83_combined = preprocessing.combine_channels(rat83_corrected)
+rat84_combined = preprocessing.combine_channels(rat84_corrected)
+
