@@ -62,6 +62,17 @@ def combine_channels(data):
 
     return data
 
+def create_windows(data, start_time, stop_time, fs=1024):
+    duration = len(data)/fs
+    if duration < stop_time or duration < start_time:
+        return f'Invalid indices: Data is {duration}s long'
+    else:
+        start_index = start_time * fs
+        stop_index = stop_time * fs
+        window = data.iloc[start_index:stop_index]
+    return window
+
+
 
 
 
