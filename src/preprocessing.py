@@ -17,7 +17,7 @@ def proper_format(file_path):
     return df
 
 
-def mean_ground_correction(data, plot=True):
+def mean_ground_correction(data, plot=False):
     channels = ['PFC', 'hippocampus1', 'hippocampus2', 'striatum1', 'striatum2', 'striatum3','ground1', 'ground2', 'ground3']
     mean_ground = ((data['ground1'] + data['ground2'] + data['ground3'])/3)
     time_vector = np.arange(start=0, stop= (len(data)))
@@ -51,7 +51,7 @@ def bandpass_of_interest(data, lo, hi, fs=1024, plot=False):
     else:
         return data  # Returning data might be more useful than just 'return'
     
-def combine_channels(data):
+"""def combine_channels(data):
     hippocampus_channels = ['hippocampus1', 'hippocampus2']
     data['hippocampus_combined'] = data[hippocampus_channels].mean(axis=1)
 
@@ -60,6 +60,12 @@ def combine_channels(data):
 
     data.drop(columns=hippocampus_channels + striatum_channels, inplace=True, errors='ignore')
 
+    return data
+"""
+
+def combine_channels(data):
+    data['hippocampus'] = (data['hippocampus1'] + data['hippocampus2'])/2
+    data['striatum'] = (data['striatum1'] + data['striatum2'] + data['striatum3']/3)
     return data
 
 def create_windows(data, start_time, stop_time, fs=1024):
