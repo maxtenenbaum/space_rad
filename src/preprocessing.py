@@ -52,8 +52,16 @@ def bandpass_of_interest(data, lo, hi, fs=1024, plot=False):
         return data  # Returning data might be more useful than just 'return'
     
 def combine_channels(data):
-    hippocampus = (data['hippocampus1'] + data['hippocampus2']) / 2
-    striatum = (data['striatum1'] + data['striatum2'] + data['striatum3']) / 3
+    hippocampus_channels = ['hippocampus1', 'hippocampus2']
+    data['hippocampus_combined'] = data[hippocampus_channels].mean(axis=1)
+
+    striatum_channels = ['striatum1', 'striatum2', 'striatum3']
+    data['striatum_combined'] = data[striatum_channels].mean(axis=1)
+
+    data.drop(columns=hippocampus_channels + striatum_channels, inplace=True, errors='ignore')
+
+    return data
+
 
 
 
