@@ -79,8 +79,28 @@ def create_windows(data, start_time, stop_time, fs=1024):
     return window
 
 
+def signal_to_noise(data, recording_channels):
+    # Calculate mean squared value for the noise channel
+    noise_power = np.mean(data['ground1']**2)
+    # Check for zero noise power to avoid division by zero
+    if noise_power == 0:
+        print(f"Noise power for ground is zero, cannot compute SNR.")
+        return
+    # Calculate and print SNR for each signal channel
+    for channel in recording_channels:
+        # Check if the signal channel exists in the dataframe
+        if channel not in data.columns:
+            print(f"Signal channel '{channel}' not found in the dataframe.")
+            continue
+        # Calculate mean squared value for the signal channel
+        signal_power = np.mean(data[channel]**2)
 
+        # Calculate SNR
+        snr = 10 * np.log10(signal_power / noise_power)
+        print(f"SNR for '{channel}': {snr} dB")
 
+# Example usage:
+# calculate_snr_for_channels(your_dataframe, ['channel1', 'channel2', ...], 'ground2')
 
 
 

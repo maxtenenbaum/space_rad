@@ -3,6 +3,8 @@ import os
 import scipy.signal as signal
 import matplotlib.pyplot as plt
 from scipy.fft import fft, ifft
+import pywt
+from scipy.signal import spectrogram
 
 def plot_data(data, title):
     output_dir = "output/plots/"
@@ -71,3 +73,30 @@ def plot_power(data, title, reference_power=1):
     ax.legend()  # Add a legend to distinguish channels
 
     plt.savefig(os.path.join(output_dir, f"{title}.png"))  # Ensure the filename is valid
+
+
+
+
+def spectrogram_and_data(data, recording_channels, fs=1024, title='Test'):
+    output_dir = "output/plots/"
+    os.makedirs(output_dir, exist_ok=True)
+    n_channels = len(recording_channels)
+    fig, axes = plt.subplots(2 * n_channels, 1, figsize=(10, 4 * n_channels))
+
+    for i, channel in enumerate(recording_channels):
+        # Plot the raw data
+        axes[2*i].plot(data[channel])
+        axes[2*i].set_title(f'{title} - {channel} - Raw Data')
+        axes[2*i].set_xlabel('Time [samples]')
+        axes[2*i].set_ylabel('Amplitude')
+
+        # Compute and plot the spectrogram
+        f, t, Sxx = spectrogram(data[channel], fs=fs)
+        axes[2*i + 1].pcolormesh(t, f, 10 * np.log10(Sxx), shading='gouraud')
+        axes[2*i + 1].set_ylabel('Frequency [Hz]')
+        axes[2*i + 1].set_xlabel('Time [sec]')
+        axes[2*i + 1].set_title(f'{title} - {channel} - Spectrogram')
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, f"{title}.png"))  # Save the figure
+    plt.close() 

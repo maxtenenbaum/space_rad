@@ -8,6 +8,12 @@ This pipeline is different than the first pipeline in the following ways:
 Data loading, bandapss, ground correction, are identical
 
 """
+
+"""
+VISUALIZSTION MODULE AT BOTTOM NOT WORKING
+"""
+
+
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,6 +22,7 @@ import scipy.signal as signal
 from scipy.signal import welch, butter, filtfilt
 from scipy import stats
 from scipy.fft import fft, ifft
+from scipy.signal import spectrogram
 import sys
 sys.path.append('/Users/maxtenenbaum/Desktop/space_radiation/space_rad')
 from src import preprocessing, analysis, visualization
@@ -158,3 +165,17 @@ def compare_power_between_windows_and_save_table_periodogram(data1, data2, fs=10
 os.makedirs('output/tables/', exist_ok=True)  # Ensure output directory exists
 results_rat83 = compare_power_between_windows_and_save_table_periodogram(rat83_first_half, rat83_second_half, output_dir='output/tables/', title="Rat83 Halved")
 results_rat84 = compare_power_between_windows_and_save_table_periodogram(rat84_first_half, rat84_second_half, output_dir='output/tables/', title="Rat84 Halved")
+
+# Signal to Noise Ratio
+
+recording_channels = ['PFC', 'hippocampus', 'striatum']
+rat83_snr = preprocessing.signal_to_noise(rat83_combined, recording_channels)
+rat84_snr = preprocessing.signal_to_noise(rat84_combined, recording_channels)
+
+
+
+
+# Plot data and signals
+recording_channels = ['PFC', 'hippocampus', 'striatum']
+#rat83_spectrogram = visualization.spectrogram_and_data(rat83_combined, recording_channels, title = "Rat83 First Half Data")
+visualization.spectrogram_and_data(rat84_first_half, recording_channels, title = "Rat84 Full Data")
