@@ -136,10 +136,6 @@ def compare_power_between_windows_and_save_table_periodogram(data1, data2, fs=10
         # Determine direction
         direction = "Decrease" if (np.mean(Pxx1[idx1])) > (np.mean(Pxx2[idx2])) else "Increase"
 
-
-        
-
-
         # Append results to the summary list
         results_summary.append([chan, round(np.mean(Pxx1[idx1]),3), round(np.mean(Pxx2[idx2]),3), p_value, significant, direction])
 
