@@ -146,10 +146,61 @@ def compare_power_between_windows_and_save_table_periodogram(data1, data2, fs=10
     table.auto_set_column_width(col=list(range(len(table_data[0]))))
 
     # Save the figure
-    plt.savefig(os.path.join(output_dir, f'{title}comparison_results_periodogram.png'), bbox_inches='tight', pad_inches=0.1)
+    plt.savefig(os.path.join(output_dir, f'{title}'), bbox_inches='tight', pad_inches=0.1)
     plt.close()
 
     return results_summary
+
+def minute_index(minute):
+    index = minute * 60 * 1024
+    return index
+
+
+def spectrograms_of_windows(df1, df2, title, recording_channels, fs=1024, freq_limit=40):
+    num_channels = len(recording_channels)
+    plt.figure(figsize=(72, 36))
+    output_dir = "output/plots/"
+    os.makedirs(output_dir, exist_ok=True)
+
+    for i, channel in enumerate(recording_channels):
+        data1 = df1[channel]
+        data2 = df2[channel]
+
+        # Compute spectrograms
+        f1, t1_spec, Sxx1 = spectrogram(data1, fs=fs, nperseg=512)
+        f2, t2_spec, Sxx2 = spectrogram(data2, fs=fs, nperseg=512)
+
+        # Find the indices corresponding to the frequency limit
+        freq_indices = np.where(f1 <= freq_limit)[0]
+
+        # Determine vmin and vmax based on the limited frequency range
+        vmin = 10 * np.log10(np.min(Sxx1[freq_indices, :]))
+        vmax = 10 * np.log10(np.max(Sxx1[freq_indices, :]))
+
+        # Update vmax if df2 has higher values in the limited range
+        vmax = max(vmax, 10 * np.log10(np.max(Sxx2[freq_indices, :])))
+
+        # Plotting for df1
+        plt.subplot(num_channels, 2, 2*i + 1)
+        plt.pcolormesh(t1_spec, f1, 10 * np.log10(Sxx1), vmin=vmin, vmax=vmax, shading='gouraud', cmap='magma')
+        plt.ylabel('Frequency [Hz]')
+        plt.ylim(0, freq_limit)
+        plt.xlabel('Time [sec]', fontsize=32)
+        plt.title(f'Spectrogram for {channel} in first window', fontsize=32)
+
+        # Plotting for df2
+        plt.subplot(num_channels, 2, 2*i + 2)
+        plt.pcolormesh(t2_spec, f2, 10 * np.log10(Sxx2), vmin=vmin, vmax=vmax, shading='gouraud', cmap='magma')
+        plt.ylabel('Frequency [Hz]')
+        plt.ylim(0, freq_limit)
+        plt.xlabel('Time [sec]', fontsize=32)
+        plt.title(f'Spectrogram for {channel} in second window', fontsize=32)
+
+    plt.tight_layout()
+    plt.subplots_adjust(top=0.95)
+    plt.suptitle(f'{title}', fontsize=48, y=0.98)
+    plt.savefig(os.path.join(output_dir, f"{title}.png"))
+
 
 
 #%% Pipeline
@@ -183,21 +234,21 @@ os.makedirs('output/tables/', exist_ok=True)  # Ensure output directory exists
 results_rat83 = compare_power_between_windows_and_save_table_periodogram(rat83_first_half, rat83_second_half, output_dir='output/tables/', title="Rat83 Halved")
 results_rat84 = compare_power_between_windows_and_save_table_periodogram(rat84_first_half, rat84_second_half, output_dir='output/tables/', title="Rat84 Halved")
 
-# Two minute windows
-three_minute = 3 * 60 * 1024  # Start of 3 minutes
-five_minute = 5 * 60 * 1024    # End of 5 minutes
-ten_minute = 10 * 60 * 1024
-twelve_minute = 12 * 60 * 1024
-seven_minute = 7 * 60 * 1024
-fourteen_minute = 14 * 60 * 1024
-nine_minute = 9 * 60 * 1024
-sixteen_minute = 16 * 60 * 1024
-
 ## Creating  windows
-rat83_first_window = rat83_combined.iloc[seven_minute:nine_minute]
-rat84_first_window = rat84_combined.iloc[seven_minute:nine_minute]
-rat83_second_window = rat83_combined.iloc[fourteen_minute:sixteen_minute]
-rat84_second_window = rat84_combined.iloc[fourteen_minute:sixteen_minute]
+rat83_first_window = rat83_combined.iloc[minute_index(5):minute_index(7)]
+rat84_first_window = rat84_combined.iloc[minute_index(9):minute_index(11)]
+rat83_second_window = rat83_combined.iloc[minute_index(12):minute_index(14)]
+rat84_second_window = rat84_combined.iloc[minute_index(16):minute_index(18)]
 ### Significance between windows
-results_rat83_windowed = compare_power_between_windows_and_save_table_periodogram(rat83_first_window, rat83_second_window, output_dir='output/tables', title="Rat83 7:9 and 14:16 Windows")
-results_rat84_windowed = compare_power_between_windows_and_save_table_periodogram(rat84_first_window, rat84_second_window, output_dir='output/tables', title="Rat84 7:9 and 14:16 Windows")
+results_rat83_windowed = compare_power_between_windows_and_save_table_periodogram(rat83_first_window, rat83_second_window, output_dir='output/tables', title="Rat83 5:7 and 12:14 Windows")
+results_rat84_windowed = compare_power_between_windows_and_save_table_periodogram(rat84_first_window, rat84_second_window, output_dir='output/tables', title="Rat84 9:11 and 16:18 Windows")
+
+# Plot Spectrograms of windows
+recording_channels = ['PFC','PPC','striatum']
+rat83_graphs = spectrograms_of_windows(rat83_first_window, rat83_second_window, 'Rat83 5-7min and 12-14min Spectrogram', recording_channels=recording_channels)
+rat84_graphs = spectrograms_of_windows(rat84_first_window, rat84_second_window, 'Rat84 9-11min and 16-18min Spectrogram', recording_channels=recording_channels)
+
+#%%
+
+fixed84_first_half = power_spectral_density(rat84_first_half, title="Rat84 - First Half")
+fixed84_second_half = power_spectral_density(rat84_second_half, title="Rat84 - Second Half")
